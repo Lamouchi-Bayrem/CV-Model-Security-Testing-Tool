@@ -6,7 +6,12 @@ Performs various security tests on CV models
 import numpy as np
 from typing import Dict, List, Tuple, Optional
 import time
-from art.attacks.evasion import FastGradientMethod, ProjectedGradientDescent
+from art.attacks.evasion import (
+    FastGradientMethod,
+    ProjectedGradientDescent,
+    DeepFool,
+    CarliniL2Method
+)
 from art.estimators.classification import PyTorchClassifier, TensorFlowV2Classifier, KerasClassifier
 from art.estimators.classification import ONNXClassifier
 import torch
@@ -14,7 +19,6 @@ import torch.nn as nn
 import tensorflow as tf
 import warnings
 warnings.filterwarnings('ignore')
-
 
 class SecurityTester:
     """Performs security tests on CV models"""
@@ -35,10 +39,10 @@ class SecurityTester:
         Run adversarial attack on model
         
         Args:
-            attack_type: 'fgsm' or 'pgd'
+            attack_type: 'fgsm', 'pgd', 'deepfool', or 'cwl2'
             test_images: Test images (normalized 0-1)
             labels: True labels
-            eps: Attack strength
+            eps: Attack strength (used for FGSM/PGD)
             
         Returns:
             dict: Attack results
@@ -54,10 +58,15 @@ class SecurityTester:
                 }
             
             # Select attack
-            if attack_type.lower() == 'fgsm':
+            attack_type = attack_type.lower()
+            if attack_type == 'fgsm':
                 attack = FastGradientMethod(estimator=classifier, eps=eps)
-            elif attack_type.lower() == 'pgd':
+            elif attack_type == 'pgd':
                 attack = ProjectedGradientDescent(estimator=classifier, eps=eps, max_iter=10)
+            elif attack_type == 'deepfool':
+                attack = DeepFool(classifier=classifier, max_iter=50, epsilon=0.02, nb_grads=3)
+            elif attack_type == 'cwl2':
+                attack = CarliniL2Method(classifier=classifier, max_iter=100, binary_search_steps=10)
             else:
                 return {'success': False, 'error': f'Unknown attack type: {attack_type}'}
             
@@ -80,7 +89,7 @@ class SecurityTester:
             
             return {
                 'success': True,
-                'attack_type': attack_type,
+                'attack_type': attack_type.upper(),
                 'original_accuracy': original_accuracy,
                 'adversarial_accuracy': adversarial_accuracy,
                 'accuracy_drop': original_accuracy - adversarial_accuracy,
@@ -88,7 +97,7 @@ class SecurityTester:
                 'perturbations': perturbations,
                 'perturbation_norm': perturbation_norm.tolist(),
                 'attack_time': attack_time,
-                'eps': eps
+                'eps': eps if attack_type in ['fgsm', 'pgd'] else 'N/A'
             }
             
         except Exception as e:
@@ -96,6 +105,8 @@ class SecurityTester:
                 'success': False,
                 'error': str(e)
             }
+    
+  
     
     def test_robustness(self, test_images: np.ndarray, labels: np.ndarray) -> Dict:
         """
@@ -296,6 +307,7 @@ class SecurityTester:
             'suspicious_layers': [],
             'confidence': 'Low - requires deeper analysis'
         }
+
 
 
 
