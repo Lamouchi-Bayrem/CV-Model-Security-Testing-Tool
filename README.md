@@ -18,9 +18,14 @@ A secure web-based tool for testing and pentesting computer vision models for vu
 ## Security Tests
 
 ### 1. Adversarial Attacks
-- **FGSM (Fast Gradient Sign Method)**: Fast adversarial example generation
-- **PGD (Projected Gradient Descent)**: Iterative adversarial attack
-- Measures accuracy drop and perturbation magnitude
+
+
+-FGSM (Fast Gradient Sign Method): Fast adversarial example generation
+-PGD (Projected Gradient Descent): Iterative adversarial attack
+-DeepFool: Minimal perturbation attack for misclassification
+-Carlini & Wagner L2 (C&W L2): Optimization-based attack for targeted/untargeted misclassification
+
+Measures accuracy drop and perturbation magnitude for all.
 
 ### 2. Robustness Testing
 - Gaussian noise resistance
@@ -195,6 +200,7 @@ This project is provided as-is for educational and defensive security testing pu
 ## Disclaimer
 
 This tool is designed for legitimate security testing of computer vision models. Users are responsible for ensuring they have proper authorization before testing any models. The authors are not responsible for misuse of this tool.
+
 
 
 
