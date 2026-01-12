@@ -261,6 +261,12 @@ def run_tests_page():
         st.success("Tests completed successfully!")
         st.balloons()
 
+        # Adversarial attacks
+        fgsm = st.checkbox("FGSM Adversarial Attack", value=True)
+        pgd = st.checkbox("PGD Adversarial Attack", value=True)
+        deepfool = st.checkbox("DeepFool Attack", value=False)
+        cwl2 = st.checkbox("Carlini & Wagner L2 Attack", value=False)
+
 
 def view_results_page():
     """View test results page"""
@@ -384,6 +390,7 @@ def export_report_page():
 
 if __name__ == "__main__":
     main()
+
 
 
 
