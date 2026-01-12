@@ -251,6 +251,15 @@ def run_tests_page():
             result = st.session_state.security_tester.check_model_integrity()
             test_results['integrity'] = result
             time.sleep(0.5)
+        if deepfool:
+            with st.spinner("Running DeepFool attack..."):
+                results = security_tester.run_adversarial_attack('deepfool', test_images, test_labels, eps=eps)
+                st.session_state.test_results['DeepFool'] = results
+
+        if cwl2:
+            with st.spinner("Running Carlini & Wagner L2 attack..."):
+                results = security_tester.run_adversarial_attack('cwl2', test_images, test_labels, eps=eps)
+                st.session_state.test_results['CarliniWagnerL2'] = results
         
         # Store results
         st.session_state.test_results = test_results
@@ -390,6 +399,7 @@ def export_report_page():
 
 if __name__ == "__main__":
     main()
+
 
 
 
