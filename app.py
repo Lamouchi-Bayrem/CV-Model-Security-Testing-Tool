@@ -18,7 +18,6 @@ from src.security_tester import SecurityTester
 from src.report_generator import ReportGenerator
 from src.visualizer import Visualizer
 
-
 # Page configuration
 st.set_page_config(
     page_title="CV Model Security Tester",
@@ -400,6 +399,7 @@ def export_report_page():
 
 if __name__ == "__main__":
     main()
+
 
 
 
