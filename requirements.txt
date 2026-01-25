@@ -1,17 +1,24 @@
-streamlit==1.52.2
-torch==2.9.1
-torchvision==0.20.1  # Compatible with torch 2.9
-onnxruntime==1.19.2  # Latest as of Jan 2026
-tensorflow==2.20.0
-adversarial-robustness-toolbox==1.20.1
-numpy==1.26.4
-pillow==11.0.0
-opencv-python==4.10.0.84
-matplotlib==3.9.2
-seaborn==0.13.2
-pandas==2.2.2
-reportlab==4.2.5
-scikit-learn==1.5.2
-scipy==1.14.1
-requests==2.32.3
-cryptography==43.0.1
+# Core web app
+streamlit
+
+# Data and image handling
+numpy
+pillow
+pandas
+
+# Visualization
+matplotlib
+
+# Model frameworks and runtimes
+torch # Use +cu121 for GPU if you have CUDA
+onnxruntime
+tensorflow-cpu  # CPU version to avoid GPU conflicts; use tensorflow for GPU
+
+# Adversarial Robustness Toolbox (for attacks and classifiers)
+adversarial-robustness-toolbox==1.17.0
+
+# PDF report generation
+reportlab
+
+# Optional: For better ONNX/TF support or debugging
+# scikit-learn==1.3.2  # Often required by ART indirectly
