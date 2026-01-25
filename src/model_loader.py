@@ -99,8 +99,8 @@ class ModelLoader:
     def _load_pytorch(self, file_path: Path) -> tuple:
         """Load PyTorch model"""
         try:
-            # Try loading as state dict first
-            checkpoint = torch.load(file_path, map_location='cpu')
+            # Try loading as state dict first (safe loading)
+            checkpoint = torch.load(file_path, map_location='cpu', weights_only=True)
             
             if isinstance(checkpoint, dict) and 'model_state_dict' in checkpoint:
                 # Full checkpoint
@@ -228,11 +228,11 @@ class ModelLoader:
             raise ValueError("No model loaded")
         
         if self.model_format in ['pt', 'pth']:
-            # PyTorch model - need to handle different formats
             if isinstance(self.loaded_model, dict):
                 raise ValueError("PyTorch state dict requires model architecture")
-            # For now, return dummy output
-            return np.random.rand(1, 10)  # Placeholder
+            self.loaded_model.eval()
+            with torch.no_grad():
+                return self.loaded_model(torch.from_numpy(input_data).float()).numpy()
         
         elif self.model_format == 'onnx':
             input_name = self.loaded_model.get_inputs()[0].name
@@ -250,8 +250,3 @@ class ModelLoader:
         
         else:
             raise ValueError(f"Unsupported model format for inference: {self.model_format}")
-
-
-
-
-
